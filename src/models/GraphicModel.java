@@ -14,6 +14,7 @@ import javax.media.opengl.GL;
  * @author Carl Winkler <carl at carlossus.com>
  */
 public final class GraphicModel implements IGraphicModel {
+    protected int DrawingMode = GL.GL_LINES;
     public String Shape;
     protected String Source;
     protected ArrayList<Vertex> Vertices = new ArrayList<>();
@@ -66,7 +67,7 @@ public final class GraphicModel implements IGraphicModel {
     
     @Override
     public void draw(GL gl) {
-        gl.glBegin(GL.GL_LINES);
+        gl.glBegin(DrawingMode);
         int count = 0;
         for (Vertex v : Vertices) {
             count++;
@@ -78,5 +79,10 @@ public final class GraphicModel implements IGraphicModel {
             gl.glVertex2d(v.x,v.y);
         }
         gl.glEnd();
+    }
+    
+    public void draw(GL gl, int drawingMode) {
+        DrawingMode = drawingMode;
+        draw(gl);
     }
 }
