@@ -16,6 +16,7 @@ import com.sun.opengl.util.GLUT;
 import java.awt.geom.*;
 
 import antipodion.*;
+import models.GraphicModel;
 
 /**
  *
@@ -176,14 +177,14 @@ public class DefaultDrawer implements Drawer, Constants
             gl.glScaled(size, size, 0);
             
             gl.glColor3d(0.0, 1.0, 0.0);    
-            gl.glBegin(GL.GL_TRIANGLES);
-            {
-                gl.glVertex2d(Math.cos(Math.PI/2), Math.sin(Math.PI/2));
-                gl.glVertex2d(Math.cos(4*Math.PI/3), Math.sin(4*Math.PI/3));
-                gl.glVertex2d(Math.cos(-1*Math.PI/3), Math.sin(-1*Math.PI/3));
-            }
-            gl.glEnd();
-            
+//            gl.glBegin(GL.GL_TRIANGLES);
+//            {
+//                gl.glVertex2d(Math.cos(Math.PI/2), Math.sin(Math.PI/2));
+//                gl.glVertex2d(Math.cos(4*Math.PI/3), Math.sin(4*Math.PI/3));
+//                gl.glVertex2d(Math.cos(-1*Math.PI/3), Math.sin(-1*Math.PI/3));
+//            }
+//            gl.glEnd();
+            new GraphicModel("untitled").draw(gl);
             if(haveMissiles)
             {
                 gl.glColor3d(1.0, 1.0, 1.0);
