@@ -184,7 +184,7 @@ public class DefaultDrawer implements Drawer, Constants
 //                gl.glVertex2d(Math.cos(-1*Math.PI/3), Math.sin(-1*Math.PI/3));
 //            }
 //            gl.glEnd();
-            new GraphicModel("untitled").draw(gl);
+            new GraphicModel("untitled").draw(  gl);
             if(haveMissiles)
             {
                 gl.glColor3d(1.0, 1.0, 1.0);

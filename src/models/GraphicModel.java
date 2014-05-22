@@ -29,7 +29,7 @@ public final class GraphicModel implements IGraphicModel {
     }
     @Override
     public void read() {
-        BufferedReader reader;;
+        BufferedReader reader;
         try {
             File file = new File(getFilename());
             if (!file.exists()) {
@@ -46,7 +46,7 @@ public final class GraphicModel implements IGraphicModel {
                     Vertices.add(new Vertex(Double.parseDouble(split[1]),Double.parseDouble(split[3])));
                 }
             }
-        } catch (Exception ex) {
+        } catch (Exception ex) { // gotta catch em all!
         }
     }
     
@@ -78,6 +78,9 @@ public final class GraphicModel implements IGraphicModel {
             if (count <= Vertices.size()) gl.glVertex2d(v.x,v.y);
             gl.glVertex2d(v.x,v.y);
         }
+        // join the first and last vertices
+        Vertex v = Vertices.get(0);
+        gl.glVertex2d(v.x,v.y);
         gl.glEnd();
     }
     
