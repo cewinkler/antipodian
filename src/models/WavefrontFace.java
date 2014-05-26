@@ -1,12 +1,21 @@
 package models;
 
 import java.util.ArrayList;
-import javax.media.opengl.GL;
 
 public class WavefrontFace {
     public ArrayList<Integer> Points = new ArrayList<>();
+    public String Material;
     
     public WavefrontFace(String[] split) {
+        readPoints(split);
+    }
+    
+    public WavefrontFace(String[] split, String material) {
+        Material = material;
+        readPoints(split);
+    }
+    
+    private void readPoints(String[] split) {
         int count = 0;
         for (String s : split) {
             count++;

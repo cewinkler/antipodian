@@ -174,8 +174,7 @@ public class DefaultDrawer implements Drawer, Constants
         gl.glPushMatrix();
         {
             gl.glTranslated(location.x, location.y, 0);
-            size *= 4;
-            gl.glScaled(size, size, 0);
+                    gl.glScaled(size, size, 0);
             
             gl.glColor3d(0.0, 1.0, 0.0);    
             gl.glBegin(GL.GL_TRIANGLES);
