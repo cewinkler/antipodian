@@ -1,6 +1,12 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * Author: Carl Winkler
+ * Purpose: Import Wavefront .OBJ files and transform in to OpenGL instructions using dependency injection.
+ * Requirements: 
+ * 1. .OBJ files should be in project /lib folder.
+ * 2. .OBJ files should contain edge (line) data. This is done by default in Blender.
+ * Limitations: This library currently only draws in 2D.
+ * 
+ * If [object].mtl exists, this will be scanned to locate the material diffuse colour (r,g,b) and apply it to the object.
  */
 package models;
 import java.io.BufferedReader;
@@ -14,10 +20,13 @@ import javax.media.opengl.GL;
  * @author Carl Winkler <carl at carlossus.com>
  */
 public final class GraphicModel implements IGraphicModel {
-    protected int DrawingMode = GL.GL_LINES;
+    protected int DrawingMode = GL.GL_QUADS;//GL.GL_LINES;
     public String Shape;
     protected String Source;
     protected ArrayList<Vertex> Vertices = new ArrayList<>();
+    protected ArrayList<WavefrontLine> Lines = new ArrayList<>();
+    protected ArrayList<WavefrontFace> Faces = new ArrayList<>();
+    protected GL gl;
     /**
      * It is assumed that 'obj' files are stored in the ./lib folder.
      * @param filename
@@ -27,7 +36,7 @@ public final class GraphicModel implements IGraphicModel {
         Source = filename;
         read();
     }
-    @Override
+    
     public void read() {
         BufferedReader reader;
         try {
@@ -39,18 +48,29 @@ public final class GraphicModel implements IGraphicModel {
             reader = new BufferedReader(new FileReader(file));
             String line;
             while ((line = reader.readLine()) != null) {
-                String[] split = line.split(" ");
-                if (split[0].equals("o")) Shape = split[1];
-                if (split[0].equals("v")) {
-                    // We ignore split[2] as this is height off the plane
-                    Vertices.add(new Vertex(Double.parseDouble(split[1]),Double.parseDouble(split[3])));
-                }
-            }
+                parseLine(line.split(" "));
+            }   
         } catch (Exception ex) { // gotta catch em all!
         }
     }
     
-    @Override
+    private void parseLine(String[] split) {
+        switch (split[0]) {
+            case "o":
+                Shape = split[1];
+                break;
+            case "v":
+                Vertices.add(new Vertex(split));
+                break;
+            case "l":
+                Lines.add(new WavefrontLine(split));
+                break;
+            case "f":
+                Faces.add(new WavefrontFace(split));
+                break;
+        }
+    }
+    
     public String getFilename() {
         String lib = Paths.get("").toAbsolutePath().toString() + "\\lib";
         return String.format("%s\\%s.obj",lib,Source);
@@ -65,27 +85,35 @@ public final class GraphicModel implements IGraphicModel {
         return output;
     }
     
-    @Override
+   
     public void draw(GL gl) {
-        gl.glBegin(DrawingMode);
+        this.gl = gl;
+        drawLines();
+        drawFaces();
+    }
+    
+    private void drawLines() {
+        if (Lines.isEmpty()) return;
+        gl.glBegin(GL.GL_LINES);
         int count = 0;
-        for (Vertex v : Vertices) {
-            count++;
-            if (count == 1) {
-                gl.glVertex2d(v.x, v.y);
-                continue;
-            }
-            if (count <= Vertices.size()) gl.glVertex2d(v.x,v.y);
-            gl.glVertex2d(v.x,v.y);
+        for (WavefrontLine l : Lines) {
+            drawVertex(Vertices.get(l.start));
+            drawVertex(Vertices.get(l.end));
         }
-        // join the first and last vertices
-        Vertex v = Vertices.get(0);
-        gl.glVertex2d(v.x,v.y);
         gl.glEnd();
     }
     
-    public void draw(GL gl, int drawingMode) {
-        DrawingMode = drawingMode;
-        draw(gl);
+    private void drawFaces() {
+        if (Faces.isEmpty()) return;
+        
+        for (WavefrontFace f : Faces) {
+            gl.glBegin(GL.GL_TRIANGLE_FAN);
+            for (int x : f.Points) drawVertex(Vertices.get(x));
+            gl.glEnd();
+        }            
+    }
+    
+    private void drawVertex(Vertex v) {
+        gl.glVertex2d(v.x, v.y);
     }
 }

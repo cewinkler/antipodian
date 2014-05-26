@@ -82,9 +82,9 @@ public class DefaultDrawer implements Drawer, Constants
             gl.glRotated(rotation, 0, 0, 1);
             
             gl.glColor3d(0.0, 1.0, 0.0);    
-            glu.gluDisk(circle, 0, 1.0, 20, 1);
+            glu.gluDisk(circle, 0.5, 1.0, 20, 1);
             
-            gl.glColor3d(0.0, 0.0, 0.0);
+            gl.glColor3d(1.0, 0.0, 0.0);
             gl.glBegin(GL.GL_TRIANGLE_FAN);
             {
                 gl.glVertex2d(0, 0);
@@ -174,17 +174,18 @@ public class DefaultDrawer implements Drawer, Constants
         gl.glPushMatrix();
         {
             gl.glTranslated(location.x, location.y, 0);
+            size *= 4;
             gl.glScaled(size, size, 0);
             
             gl.glColor3d(0.0, 1.0, 0.0);    
-//            gl.glBegin(GL.GL_TRIANGLES);
-//            {
+            gl.glBegin(GL.GL_TRIANGLES);
+            {
 //                gl.glVertex2d(Math.cos(Math.PI/2), Math.sin(Math.PI/2));
 //                gl.glVertex2d(Math.cos(4*Math.PI/3), Math.sin(4*Math.PI/3));
 //                gl.glVertex2d(Math.cos(-1*Math.PI/3), Math.sin(-1*Math.PI/3));
-//            }
-//            gl.glEnd();
-            new GraphicModel("untitled").draw(  gl);
+            }
+            gl.glEnd();
+            new GraphicModel("goanna").draw(gl);
             if(haveMissiles)
             {
                 gl.glColor3d(1.0, 1.0, 1.0);
