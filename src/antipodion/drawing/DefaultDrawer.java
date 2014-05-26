@@ -208,7 +208,7 @@ public class DefaultDrawer implements Drawer, Constants
             gl.glTranslated(location.x, location.y, 0);
             gl.glRotated(rotation, 0, 0, 1);
 
-            gl.glColor3d(0.0, 1.0, 1.0);
+            //gl.glColor3d(0.0, 1.0, 1.0);
             gl.glBegin(GL.GL_QUADS);
             {
                 gl.glVertex2d(-width/2, -height/2);

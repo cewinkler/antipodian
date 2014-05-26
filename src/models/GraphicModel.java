@@ -15,6 +15,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Callable;
 import javax.media.opengl.GL;
 /**
@@ -26,23 +27,20 @@ public final class GraphicModel {
     public String Shape;
     protected String Source;
     protected ArrayList<Vertex> Vertices = new ArrayList<>();
-    protected ArrayList<WavefrontLine> Lines = new ArrayList<>();
-    protected ArrayList<WavefrontFace> Faces = new ArrayList<>();
-    protected ArrayList<WavefrontMaterial> Materials = new ArrayList<>();
+    protected List<WavefrontLine> Lines = new ArrayList<>();
+    protected List<WavefrontFace> Faces = new ArrayList<>();
+    protected List<WavefrontMaterial> Materials = new ArrayList<>();
     protected GL gl;
     protected String CurrentMaterial;
     protected String MaterialFile;
     protected String[] split;
-    /**
-     * It is assumed that 'obj' files are stored in the ./lib folder.
-     * @param filename
-     * @throws java.io.IOException
-     */
-    public GraphicModel(String filename) throws IOException, Exception
+    public GraphicModel(String filename)
     {
-        Source = filename;
-        readFile(getObjectFilename(), objectParser);
-        readFile(getMaterialFilename(), materialParser);
+        try {
+            Source = filename;
+            readFile(getObjectFilename(), objectParser);
+            readFile(getMaterialFilename(), materialParser);
+        } catch (Exception ex) { }
     }
   
     private void readFile(String filename, Callable<Void> parser) throws IOException, Exception {
@@ -129,7 +127,7 @@ public final class GraphicModel {
     
     public String getMaterialFilename() {
         String lib = Paths.get("").toAbsolutePath().toString() + "\\lib";
-        return String.format("%s\\%s.mtl",lib,MaterialFile);
+        return String.format("%s\\%s",lib,MaterialFile);
     }
     
     @Override
@@ -163,6 +161,10 @@ public final class GraphicModel {
         if (Faces.isEmpty()) return;
         
         for (WavefrontFace f : Faces) {
+            WavefrontMaterial m = getMaterial(f.Material);
+            if (m != null) {
+                gl.glColor3d(m.Kd[0], m.Kd[1], m.Kd[2]);
+            }
             gl.glBegin(GL.GL_TRIANGLE_FAN);
             for (int x : f.Points) drawVertex(Vertices.get(x));
             gl.glEnd();
@@ -170,6 +172,13 @@ public final class GraphicModel {
     }
     
     private void drawVertex(Vertex v) {
-        gl.glVertex2d(v.x, v.y);
+        gl.glVertex3d(v.x, v.y, v.z);
+    }
+    
+    private WavefrontMaterial getMaterial(String material) {
+        for (WavefrontMaterial m : Materials) {
+            if (m.Name.equals(material)) return m;
+        }
+        return null;
     }
 }
