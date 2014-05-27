@@ -28,6 +28,7 @@ public class DefaultDrawer implements Drawer, Constants
     private GLU glu = new GLU();
     private GLUquadric circle = glu.gluNewQuadric();
     private GLUT glut = new GLUT();
+    private int MovingCount = 0;
     
     /** Creates a new instance of DefaultDrawer */
     public DefaultDrawer()
@@ -75,6 +76,7 @@ public class DefaultDrawer implements Drawer, Constants
     
     public void drawFlyingFox(GL gl, Point2D.Double location, double size, double rotation, int frame)
     {
+        System.out.println(rotation);
         gl.glPushMatrix();
         {
             gl.glTranslated(location.x, location.y, 0);
@@ -174,20 +176,17 @@ public class DefaultDrawer implements Drawer, Constants
         gl.glPushMatrix();
         {
             gl.glTranslated(location.x, location.y, 0);
-                    gl.glScaled(size, size, 0);
-            
-            gl.glColor3d(0.0, 1.0, 0.0);    
-            gl.glBegin(GL.GL_TRIANGLES);
-            {
-//                gl.glVertex2d(Math.cos(Math.PI/2), Math.sin(Math.PI/2));
-//                gl.glVertex2d(Math.cos(4*Math.PI/3), Math.sin(4*Math.PI/3));
-//                gl.glVertex2d(Math.cos(-1*Math.PI/3), Math.sin(-1*Math.PI/3));
+            gl.glScaled(size, size, 0);
+            if (moving) {
+                MovingCount++;
+                if (MovingCount > 10) MovingCount = 0;
+                if (MovingCount >= 5) gl.glRotated(180,0,1,0);
+                new GraphicModel("goanna-1").draw(gl);
             }
-            gl.glEnd();
-            new GraphicModel("goanna").draw(gl);
+            else new GraphicModel("goanna").draw(gl);
             if(haveMissiles)
             {
-                gl.glColor3d(1.0, 1.0, 1.0);
+                gl.glColor3d(0.0, 1.0, 1.0);
                 gl.glBegin(GL.GL_QUADS);
                 {
                     gl.glVertex2d(-0.1, 0.8);
@@ -207,7 +206,7 @@ public class DefaultDrawer implements Drawer, Constants
         {
             gl.glTranslated(location.x, location.y, 0);
             gl.glRotated(rotation, 0, 0, 1);
-
+            gl.glColor3d(0, 1, 0);
             //gl.glColor3d(0.0, 1.0, 1.0);
             gl.glBegin(GL.GL_QUADS);
             {
@@ -237,6 +236,7 @@ public class DefaultDrawer implements Drawer, Constants
 
     public void drawBackground(GL gl, double width, double height, int level, int frame)
     {
+        gl.glClearColor(0.2f, 0.2f, 0.2f, 0.0f);
     }
 
     public void drawForeground(GL gl, double width, double height, int level, int score, int goannasLeft, int frame)

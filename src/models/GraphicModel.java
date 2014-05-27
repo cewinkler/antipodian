@@ -162,9 +162,7 @@ public final class GraphicModel {
         
         for (WavefrontFace f : Faces) {
             WavefrontMaterial m = getMaterial(f.Material);
-            if (m != null) {
-                gl.glColor3d(m.Kd[0], m.Kd[1], m.Kd[2]);
-            }
+            if (m != null) gl.glColor3d(m.Kd[0], m.Kd[1], m.Kd[2]);
             gl.glBegin(GL.GL_TRIANGLE_FAN);
             for (int x : f.Points) drawVertex(Vertices.get(x));
             gl.glEnd();
@@ -172,7 +170,7 @@ public final class GraphicModel {
     }
     
     private void drawVertex(Vertex v) {
-        gl.glVertex3d(v.x, v.y, v.z);
+        gl.glVertex3d(v.x, v.y*-1, v.z); // models drawn in blender seem to appear upside-down unless the Y-axis is transformed.
     }
     
     private WavefrontMaterial getMaterial(String material) {
