@@ -29,10 +29,12 @@ public class DefaultDrawer implements Drawer, Constants
     private GLUquadric circle = glu.gluNewQuadric();
     private GLUT glut = new GLUT();
     private int MovingCount = 0;
+    private boolean FrameState = false;
     
     /** Creates a new instance of DefaultDrawer */
     public DefaultDrawer()
     {
+        
     }
     
     public void init(GL gl)
@@ -76,26 +78,14 @@ public class DefaultDrawer implements Drawer, Constants
     
     public void drawFlyingFox(GL gl, Point2D.Double location, double size, double rotation, int frame)
     {
-        System.out.println(rotation);
         gl.glPushMatrix();
         {
             gl.glTranslated(location.x, location.y, 0);
             gl.glScaled(size, size, 0);
             gl.glRotated(rotation, 0, 0, 1);
-            
-            gl.glColor3d(0.0, 1.0, 0.0);    
-            glu.gluDisk(circle, 0.5, 1.0, 20, 1);
-            
-            gl.glColor3d(1.0, 0.0, 0.0);
-            gl.glBegin(GL.GL_TRIANGLE_FAN);
-            {
-                gl.glVertex2d(0, 0);
-                gl.glVertex2d(Math.cos(5*Math.PI/4), Math.sin(5*Math.PI/4));
-                gl.glVertex2d(Math.cos(Math.PI/2), Math.sin(Math.PI/2));
-                gl.glVertex2d(Math.cos(7*Math.PI/4), Math.sin(7*Math.PI/4));
-                gl.glVertex2d(Math.cos(Math.PI/2), Math.sin(Math.PI/2));
-            }
-            gl.glEnd();
+            int flap = frame%10;
+            if (flap >= 5) new GraphicModel("pteradactyl-flap-high").draw(gl);
+            else new GraphicModel("pteradactyl-flap-low").draw(gl);
         }
         gl.glPopMatrix();
     }
@@ -146,20 +136,7 @@ public class DefaultDrawer implements Drawer, Constants
             gl.glTranslated(location.x, location.y, 0);
             gl.glScaled(size, size, 0);
             gl.glRotated(rotation, 0, 0, 1);
-            
-            gl.glColor3d(0.8, 0.8, 0.8);    
-            glu.gluDisk(circle, 0, 1.0, 20, 1);
-            
-            gl.glColor3d(0.0, 0.0, 0.0);
-            gl.glBegin(GL.GL_TRIANGLE_FAN);
-            {
-                gl.glVertex2d(0, 0);
-                gl.glVertex2d(Math.cos(5*Math.PI/4), Math.sin(5*Math.PI/4));
-                gl.glVertex2d(Math.cos(Math.PI/2), Math.sin(Math.PI/2));
-                gl.glVertex2d(Math.cos(7*Math.PI/4), Math.sin(7*Math.PI/4));
-                gl.glVertex2d(Math.cos(Math.PI/2), Math.sin(Math.PI/2));
-            }
-            gl.glEnd();
+            new GraphicModel("pteradactyl").draw(gl);
         }
         gl.glPopMatrix();
     }

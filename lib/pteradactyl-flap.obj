@@ -1,6 +1,6 @@
 # Blender v2.70 (sub 0) OBJ File: 'pteradactyl.blend'
 # www.blender.org
-mtllib pteradactyl.mtl
+mtllib pteradactyl-flap.mtl
 o Cube_Cube.001
 v -0.134059 -0.065593 0.240952
 v -0.134059 -0.065593 -0.240951
@@ -136,7 +136,6 @@ f 20 19 27 35
 f 35 27 26 36
 f 36 26 25 37
 f 37 25 24 38
-f 38 24 23 39
 f 39 23 22 40
 f 40 22 21 41
 f 59 51 49 60
@@ -178,3 +177,5 @@ f 84 14 86 92
 f 82 15 87 90
 f 14 16 88 86
 f 15 13 85 87
+usemtl Material.002
+f 38 24 23 39
