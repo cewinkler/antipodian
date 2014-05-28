@@ -37,19 +37,18 @@ public class DefaultDrawer implements Drawer, Constants
     private GraphicModel Missile = new GraphicModel("missile");
     private GraphicModel[] Eagle = new GraphicModel[] {
         new GraphicModel("eagle"),
-        new GraphicModel("eagle-1")
+        new GraphicModel("eagle-flap")
     };
     private GraphicModel FlyingFox = new GraphicModel("flyingfox");
     private GraphicModel Locust = new GraphicModel("locust-move");
     private GraphicModel[] Teradactyl = new GraphicModel[] {
         new GraphicModel("pteradactyl-flap-high"),
-        new GraphicModel("pteradactyl-flap-flap"),
+        new GraphicModel("pteradactyl-flap"),
         new GraphicModel("pteradactyl-flap-low"),
     };
-    private double Red = 0.0;
-    private double Blue = 0.0;
-    private double Green = 0.0;
-    
+    private float[] Colours = new float[]{ 0.0f, 0.0f, 0.0f};
+    private float CurrentColour = 0.0f;
+    private boolean ColourIncrease = true;
     /** Creates a new instance of DefaultDrawer */
     public DefaultDrawer()
     {
@@ -205,8 +204,15 @@ public class DefaultDrawer implements Drawer, Constants
 
     public void drawBackground(GL gl, double width, double height, int level, int frame)
     {
-        
-        gl.glClearColor(0.5f, 0.5f, 0.5f, 0.0f);
+        System.out.println(level);
+        Colours[0] = 0.0f;
+        Colours[1] = 0.0f;
+        Colours[2] = 0.0f;
+        if (CurrentColour > 0.5) ColourIncrease = false;
+        if (CurrentColour < 0) ColourIncrease = true;
+        CurrentColour += ColourIncrease?0.01:-0.01;
+        Colours[level-1] = CurrentColour;
+        gl.glClearColor(Colours[0],Colours[1],Colours[2],0.0f);
     }
 
     public void drawForeground(GL gl, double width, double height, int level, int score, int goannasLeft, int frame)
