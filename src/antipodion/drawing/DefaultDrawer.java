@@ -46,7 +46,9 @@ public class DefaultDrawer implements Drawer, Constants
         new GraphicModel("pteradactyl-flap-flap"),
         new GraphicModel("pteradactyl-flap-low"),
     };
-   
+    private double Red = 0.0;
+    private double Blue = 0.0;
+    private double Green = 0.0;
     
     /** Creates a new instance of DefaultDrawer */
     public DefaultDrawer()
@@ -203,6 +205,7 @@ public class DefaultDrawer implements Drawer, Constants
 
     public void drawBackground(GL gl, double width, double height, int level, int frame)
     {
+        
         gl.glClearColor(0.5f, 0.5f, 0.5f, 0.0f);
     }
 
