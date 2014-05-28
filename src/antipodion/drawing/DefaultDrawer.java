@@ -29,7 +29,6 @@ public class DefaultDrawer implements Drawer, Constants
     private GLUquadric circle = glu.gluNewQuadric();
     private GLUT glut = new GLUT();
     private int MovingCount = 0;
-    private boolean FrameState = false;
     
     /** Creates a new instance of DefaultDrawer */
     public DefaultDrawer()
@@ -51,20 +50,10 @@ public class DefaultDrawer implements Drawer, Constants
             gl.glTranslated(location.x, location.y, 0);
             gl.glScaled(size, size, 0);
             gl.glRotated(rotation, 0, 0, 1);
+            gl.glColor3d(1.0, 1.0, 0.0);
+            if (rotateObject(frame)) gl.glRotated(180,0.0,1.0,0.0);
+            new GraphicModel("locust-move").draw(gl);
             
-            gl.glColor3d(1.0, 1.0, 0.0);    
-            glu.gluDisk(circle, 0, 1.0, 20, 1);
-            
-            gl.glColor3d(0.0, 0.0, 0.0);
-            gl.glBegin(GL.GL_TRIANGLE_FAN);
-            {
-                gl.glVertex2d(0, 0);
-                gl.glVertex2d(Math.cos(5*Math.PI/4), Math.sin(5*Math.PI/4));
-                gl.glVertex2d(Math.cos(Math.PI/2), Math.sin(Math.PI/2));
-                gl.glVertex2d(Math.cos(7*Math.PI/4), Math.sin(7*Math.PI/4));
-                gl.glVertex2d(Math.cos(Math.PI/2), Math.sin(Math.PI/2));
-            }
-            gl.glEnd();
         }
         gl.glPopMatrix();
     }
@@ -156,8 +145,8 @@ public class DefaultDrawer implements Drawer, Constants
             gl.glScaled(size, size, 0);
             if (moving) {
                 MovingCount++;
-                if (MovingCount > 10) MovingCount = 0;
-                if (MovingCount >= 5) gl.glRotated(180,0,1,0);
+                if (MovingCount > 20) MovingCount = 0;
+                if (MovingCount >= 10) gl.glRotated(180,0,1,0);
                 new GraphicModel("goanna-1").draw(gl);
             }
             else new GraphicModel("goanna").draw(gl);
@@ -234,5 +223,9 @@ public class DefaultDrawer implements Drawer, Constants
 
         gl.glRasterPos2d(x, y); y -= ystep;
         glut.glutBitmapString(GLUT.BITMAP_HELVETICA_12, "Score: " + score);
+    }
+    
+    private boolean rotateObject(int frame) {
+        return (frame % 10)*2 > 10;
     }
 }
