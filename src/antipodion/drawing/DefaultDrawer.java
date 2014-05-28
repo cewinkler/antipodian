@@ -29,6 +29,24 @@ public class DefaultDrawer implements Drawer, Constants
     private GLUquadric circle = glu.gluNewQuadric();
     private GLUT glut = new GLUT();
     private int MovingCount = 0;
+    private double PreviousX = 0;
+    private GraphicModel[] Goanna = new GraphicModel[]{
+        new GraphicModel("goanna"),
+        new GraphicModel("goanna-1")
+    };
+    private GraphicModel Missile = new GraphicModel("missile");
+    private GraphicModel[] Eagle = new GraphicModel[] {
+        new GraphicModel("eagle"),
+        new GraphicModel("eagle-1")
+    };
+    private GraphicModel FlyingFox = new GraphicModel("flyingfox");
+    private GraphicModel Locust = new GraphicModel("locust-move");
+    private GraphicModel[] Teradactyl = new GraphicModel[] {
+        new GraphicModel("pteradactyl-flap-high"),
+        new GraphicModel("pteradactyl-flap-flap"),
+        new GraphicModel("pteradactyl-flap-low"),
+    };
+   
     
     /** Creates a new instance of DefaultDrawer */
     public DefaultDrawer()
@@ -52,7 +70,7 @@ public class DefaultDrawer implements Drawer, Constants
             gl.glRotated(rotation, 0, 0, 1);
             gl.glColor3d(1.0, 1.0, 0.0);
             if (rotateObject(frame)) gl.glRotated(180,0.0,1.0,0.0);
-            new GraphicModel("locust-move").draw(gl);
+            Locust.draw(gl);
             
         }
         gl.glPopMatrix();
@@ -72,9 +90,8 @@ public class DefaultDrawer implements Drawer, Constants
             gl.glTranslated(location.x, location.y, 0);
             gl.glScaled(size, size, 0);
             gl.glRotated(rotation, 0, 0, 1);
-            int flap = frame%10;
-            if (flap >= 5) new GraphicModel("pteradactyl-flap-high").draw(gl);
-            else new GraphicModel("pteradactyl-flap-low").draw(gl);
+            FlyingFox.draw(gl);
+            //new GraphicModel("flyingfox").draw(gl);
         }
         gl.glPopMatrix();
     }
@@ -93,20 +110,8 @@ public class DefaultDrawer implements Drawer, Constants
             gl.glTranslated(location.x, location.y, 0);
             gl.glScaled(size, size, 0);
             gl.glRotated(rotation, 0, 0, 1);
-            
-            gl.glColor3d(1.0, 0.0, 0.0);    
-            glu.gluDisk(circle, 0, 1.0, 20, 1);
-            
-            gl.glColor3d(0.0, 0.0, 0.0);
-            gl.glBegin(GL.GL_TRIANGLE_FAN);
-            {
-                gl.glVertex2d(0, 0);
-                gl.glVertex2d(Math.cos(5*Math.PI/4), Math.sin(5*Math.PI/4));
-                gl.glVertex2d(Math.cos(Math.PI/2), Math.sin(Math.PI/2));
-                gl.glVertex2d(Math.cos(7*Math.PI/4), Math.sin(7*Math.PI/4));
-                gl.glVertex2d(Math.cos(Math.PI/2), Math.sin(Math.PI/2));
-            }
-            gl.glEnd();
+            int flap = frame % 20;
+            (flap > 5?Eagle[0]:Eagle[1]).draw(gl);
         }
         gl.glPopMatrix();
     }
@@ -125,7 +130,11 @@ public class DefaultDrawer implements Drawer, Constants
             gl.glTranslated(location.x, location.y, 0);
             gl.glScaled(size, size, 0);
             gl.glRotated(rotation, 0, 0, 1);
-            new GraphicModel("pteradactyl").draw(gl);
+            int flap = frame%20;
+            if (flap <= 5) Teradactyl[0].draw(gl);
+            else if (flap <= 10) Teradactyl[1].draw(gl);
+            else if (flap <= 15) Teradactyl[2].draw(gl);
+            else Teradactyl[0].draw(gl);
         }
         gl.glPopMatrix();
     }
@@ -147,9 +156,9 @@ public class DefaultDrawer implements Drawer, Constants
                 MovingCount++;
                 if (MovingCount > 20) MovingCount = 0;
                 if (MovingCount >= 10) gl.glRotated(180,0,1,0);
-                new GraphicModel("goanna-1").draw(gl);
+                Goanna[1].draw(gl);
             }
-            else new GraphicModel("goanna").draw(gl);
+            else Goanna[0].draw(gl);
             if(haveMissiles)
             {
                 gl.glColor3d(0.0, 1.0, 1.0);
@@ -163,7 +172,8 @@ public class DefaultDrawer implements Drawer, Constants
                 gl.glEnd();
             }
         }
-        gl.glPopMatrix();        
+        gl.glPopMatrix();
+        PreviousX = location.x;
     }
 
     public void drawMissile(GL gl, Point2D.Double location, double rotation, double width, double height, int frame)
@@ -172,16 +182,7 @@ public class DefaultDrawer implements Drawer, Constants
         {
             gl.glTranslated(location.x, location.y, 0);
             gl.glRotated(rotation, 0, 0, 1);
-            gl.glColor3d(0, 1, 0);
-            //gl.glColor3d(0.0, 1.0, 1.0);
-            gl.glBegin(GL.GL_QUADS);
-            {
-                gl.glVertex2d(-width/2, -height/2);
-                gl.glVertex2d(-width/2, height/2);
-                gl.glVertex2d(width/2, height/2);
-                gl.glVertex2d(width/2, -height/2);
-            }
-            gl.glEnd();
+            new GraphicModel("missile").draw(gl);
         }
         gl.glPopMatrix();
     }
@@ -202,7 +203,7 @@ public class DefaultDrawer implements Drawer, Constants
 
     public void drawBackground(GL gl, double width, double height, int level, int frame)
     {
-        gl.glClearColor(0.2f, 0.2f, 0.2f, 0.0f);
+        gl.glClearColor(0.5f, 0.5f, 0.5f, 0.0f);
     }
 
     public void drawForeground(GL gl, double width, double height, int level, int score, int goannasLeft, int frame)
