@@ -46,6 +46,7 @@ public class DefaultDrawer implements Drawer, Constants
         new GraphicModel("pteradactyl-flap"),
         new GraphicModel("pteradactyl-flap-low"),
     };
+    private GraphicModel Explosion = new GraphicModel("explosion");
     private float[] Colours = new float[]{ 0.0f, 0.0f, 0.0f};
     private float CurrentColour = 0.0f;
     private boolean ColourIncrease = true;
@@ -92,7 +93,6 @@ public class DefaultDrawer implements Drawer, Constants
             gl.glScaled(size, size, 0);
             gl.glRotated(rotation, 0, 0, 1);
             FlyingFox.draw(gl);
-            //new GraphicModel("flyingfox").draw(gl);
         }
         gl.glPopMatrix();
     }
@@ -195,9 +195,7 @@ public class DefaultDrawer implements Drawer, Constants
             gl.glTranslated(location.x, location.y, 0);
             double scale = (30.0*frame)/ANIM_FRAMES;
             gl.glScaled(scale, scale, 1);
-            
-            gl.glColor4d(0.0, 0.5, 1.0, 0.5);    
-            glu.gluDisk(circle, 0, 1.0, 20, 1);
+            Explosion.draw(gl);
         }
         gl.glPopMatrix();
     }
