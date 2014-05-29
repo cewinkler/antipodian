@@ -86,7 +86,7 @@ public class DefaultDrawer implements Drawer, Constants
     public void drawLocustDeathSequence(GL gl, Point2D.Double location, double size, double rotation, int frame)
     {
         double newSize = size*(1 + frame/(double)ANIM_FRAMES);
-        
+        rotation += (frame%10)*37.5;
         drawLocust(gl, location, newSize, rotation, 0);
     }
     
@@ -105,7 +105,7 @@ public class DefaultDrawer implements Drawer, Constants
     public void drawFlyingFoxDeathSequence(GL gl, Point2D.Double location, double size, double rotation, int frame)
     {
         double newSize = size*(1 + frame/(double)ANIM_FRAMES);
-        
+        rotation += (frame%10)*37.5;
         drawFlyingFox(gl, location, newSize, rotation, 0);
     }
 
@@ -125,7 +125,7 @@ public class DefaultDrawer implements Drawer, Constants
     public void drawWedgeTailedEagleDeathSequence(GL gl, Point2D.Double location, double size, double rotation, int frame)
     {
         double newSize = size*(1 + frame/(double)ANIM_FRAMES);
-        
+        rotation += (frame%10)*37.5;
         drawWedgeTailedEagle(gl, location, newSize, rotation, 0);
     }
 
@@ -148,7 +148,7 @@ public class DefaultDrawer implements Drawer, Constants
     public void drawTeradactylDeathSequence(GL gl, Point2D.Double location, double size, double rotation, int frame)
     {
         double newSize = size*(1 + frame/(double)ANIM_FRAMES);
-        
+        rotation += (frame%10)*37.5;
         drawTeradactyl(gl, location, newSize, rotation, 0);
     }
 
