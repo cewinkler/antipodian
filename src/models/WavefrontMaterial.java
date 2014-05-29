@@ -14,9 +14,9 @@ public class WavefrontMaterial {
     public String Name;
     public Double Ns;
     public Double[] Ka = new Double[3];
-    public Double[] Kd = new Double[3];
-    public Double[] Ks = new Double[3];
-    
+    public Double[] Kd = new Double[3]; // Diffuse colour
+    public Double[] Ks = new Double[3]; // Specular colojur
+    public Double D; // Transparency value
     public WavefrontMaterial(String name) {
         Name = name;
     }

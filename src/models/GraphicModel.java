@@ -94,6 +94,9 @@ public final class GraphicModel {
                 Double.parseDouble(split[2]),
                 Double.parseDouble(split[3])};
                 break;
+            case "d":
+                material.D = Double.parseDouble(split[1]);
+                break;
         }
     }
     
@@ -162,7 +165,7 @@ public final class GraphicModel {
         
         for (WavefrontFace f : Faces) {
             WavefrontMaterial m = getMaterial(f.Material);
-            if (m != null) gl.glColor3d(m.Kd[0], m.Kd[1], m.Kd[2]);
+            if (m != null) gl.glColor4d(m.Kd[0], m.Kd[1], m.Kd[2], m.D);
             gl.glBegin(GL.GL_TRIANGLE_FAN);
             for (int x : f.Points) drawVertex(Vertices.get(x));
             gl.glEnd();

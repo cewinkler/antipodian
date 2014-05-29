@@ -47,9 +47,14 @@ public class DefaultDrawer implements Drawer, Constants
         new GraphicModel("pteradactyl-flap-low"),
     };
     private GraphicModel Explosion = new GraphicModel("explosion");
+    private GraphicModel Hud = new GraphicModel("hud-bar");
+    private GraphicModel HudLevel = new GraphicModel("hud-level");
+    private GraphicModel HudLives = new GraphicModel("hud-lives");
+    private GraphicModel HudScore = new GraphicModel("hud-score");
     private float[] Colours = new float[]{ 0.0f, 0.0f, 0.0f};
     private float CurrentColour = 0.0f;
     private boolean ColourIncrease = true;
+    private double YOffset;
     /** Creates a new instance of DefaultDrawer */
     public DefaultDrawer()
     {
@@ -151,30 +156,29 @@ public class DefaultDrawer implements Drawer, Constants
     {
         gl.glPushMatrix();
         {
-            gl.glTranslated(location.x, location.y, 0);
-            gl.glScaled(size, size, 0);
-            if (moving) {
+            gl.glTranslated(location.x, location.y+YOffset, 0);
+            gl.glScaled(size, size, 0); 
+           if (moving) {
                 MovingCount++;
                 if (MovingCount > 20) MovingCount = 0;
                 if (MovingCount >= 10) gl.glRotated(180,0,1,0);
                 Goanna[1].draw(gl);
             }
             else Goanna[0].draw(gl);
-            if(haveMissiles)
-            {
-                gl.glColor3d(0.0, 1.0, 1.0);
-                gl.glBegin(GL.GL_QUADS);
-                {
-                    gl.glVertex2d(-0.1, 0.8);
-                    gl.glVertex2d(-0.1, 1.0);
-                    gl.glVertex2d(0.1, 1.0);
-                    gl.glVertex2d(0.1, 0.8);
-                }
-                gl.glEnd();
-            }
         }
         gl.glPopMatrix();
+        drawGoannaMissileIndicator(gl, location, haveMissiles, frame);
         PreviousX = location.x;
+    }
+    
+    private void drawGoannaMissileIndicator(GL gl, Point2D.Double location, boolean haveMissiles, int frame) {
+        gl.glPushMatrix();
+        if (haveMissiles) {
+            gl.glTranslated(location.x - 50, location.y+YOffset - 20, 0);
+            gl.glRotated((frame%10)*36, 0, 1, 0);
+            Missile.draw(gl);
+        }
+        gl.glPopMatrix();
     }
 
     public void drawMissile(GL gl, Point2D.Double location, double rotation, double width, double height, int frame)
@@ -183,7 +187,7 @@ public class DefaultDrawer implements Drawer, Constants
         {
             gl.glTranslated(location.x, location.y, 0);
             gl.glRotated(rotation, 0, 0, 1);
-            new GraphicModel("missile").draw(gl);
+            Missile.draw(gl);
         }
         gl.glPopMatrix();
     }
@@ -202,11 +206,10 @@ public class DefaultDrawer implements Drawer, Constants
 
     public void drawBackground(GL gl, double width, double height, int level, int frame)
     {
-        System.out.println(level);
         Colours[0] = 0.0f;
         Colours[1] = 0.0f;
         Colours[2] = 0.0f;
-        if (CurrentColour > 0.5) ColourIncrease = false;
+        if (CurrentColour > 0.4) ColourIncrease = false;
         if (CurrentColour < 0) ColourIncrease = true;
         CurrentColour += ColourIncrease?0.01:-0.01;
         Colours[level-1] = CurrentColour;
@@ -215,25 +218,43 @@ public class DefaultDrawer implements Drawer, Constants
 
     public void drawForeground(GL gl, double width, double height, int level, int score, int goannasLeft, int frame)
     {
-        int ystep = -10;
-        double x = 10;
-        double y = 50;
+        YOffset = height*0.1;
+        gl.glPushMatrix();
+        gl.glTranslated(0,0,0); 
+        gl.glScaled(width,height*0.1,0);
+        Hud.draw(gl);
+        gl.glPopMatrix();
         
-        gl.glColor3d(1.0, 0.0, 0.0);
+        addHudText(gl, HudLevel, 100);
+        addHudText(gl, HudLives, width-75);
+        addHudText(gl, HudScore, 200);
+        
+        gl.glColor3d(1.0, 1.0, 1.0);
+        gl.glRasterPos2d(75, 25);
+        glut.glutBitmapString(GLUT.BITMAP_HELVETICA_18, ""+level);
+        
+        gl.glRasterPos2d(175, 25);
+        glut.glutBitmapString(GLUT.BITMAP_HELVETICA_18, ""+score);
 
-        gl.glRasterPos2d(x, y); y -= ystep;
-        glut.glutBitmapString(GLUT.BITMAP_HELVETICA_12, "Level: " + level);
-
-        gl.glColor3d(1.0, 0.5, 0.0); 
-
-        gl.glRasterPos2d(x, y); y -= ystep;
-        glut.glutBitmapString(GLUT.BITMAP_HELVETICA_12, "Lives left: " + goannasLeft);
-
-        gl.glRasterPos2d(x, y); y -= ystep;
-        glut.glutBitmapString(GLUT.BITMAP_HELVETICA_12, "Score: " + score);
+        double xStep = 25;
+        for (int i = 1; i <= goannasLeft;i++) {
+            gl.glPushMatrix();
+            gl.glTranslated(width-(i*xStep),25,0);
+            gl.glScaled(5,5,0);
+            Goanna[0].draw(gl);
+            gl.glPopMatrix();
+        }
     }
     
     private boolean rotateObject(int frame) {
         return (frame % 10)*2 > 10;
+    }
+    
+    private void addHudText(GL gl, GraphicModel model, double x) {
+        gl.glPushMatrix();
+        gl.glTranslated(x, 40, 0);
+        gl.glScaled(20,35,0);
+        model.draw(gl);
+        gl.glPopMatrix();
     }
 }
